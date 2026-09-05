@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ali Hussain Chowdhury Rahi — Web Designer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B1220;
+    --ink-2:#0F1B2E;
+    --paper:#F3F4F7;
+    --paper-dim:#B6BECE;
+    --cobalt:#5B8CFF;
+    --coral:#FF8A65;
+    --line:rgba(243,244,247,0.10);
+    --line-strong:rgba(243,244,247,0.18);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'IBM Plex Sans',sans-serif;
+    line-height:1.65;
+    overflow-x:hidden;
+  }
+  .display{font-family:'Bricolage Grotesque',sans-serif;}
+  a{color:inherit;text-decoration:none;}
+  ::selection{background:var(--cobalt);color:var(--ink);}
+  a:focus-visible, button:focus-visible{outline:2px solid var(--cobalt);outline-offset:3px;}
+
+  .wrap{max-width:1180px;margin:0 auto;padding:0 32px;}
+
+  /* subtle grid texture across whole page, slowly panning */
+  body::before{
+    content:'';
+    position:fixed;inset:0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:64px 64px;
+    pointer-events:none;
+    z-index:0;
+    opacity:0.5;
+    mask-image:linear-gradient(to bottom, black, transparent 85%);
+    animation:panGrid 40s linear infinite;
+  }
+  @keyframes panGrid{
+    from{background-position:0 0, 0 0;}
+    to{background-position:64px 64px, 64px 64px;}
+  }
+  nav, header, section, footer{position:relative;z-index:1;}
+
+  /* ===== NAV ===== */
+  nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(11,18,32,0.78);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line-strong);
+  }
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:76px;}
+  .logo{font-family:'Bricolage Grotesque';font-weight:700;font-size:19px;letter-spacing:-0.02em;}
+  .nav-links{display:flex;gap:36px;font-size:15px;font-weight:500;}
+  .nav-links a{position:relative;padding:4px 0;color:var(--paper-dim);}
+  .nav-links a::after{content:'';position:absolute;left:0;bottom:0;width:0;height:2px;background:var(--cobalt);transition:width .25s ease;}
+  .nav-links a:hover{color:var(--paper);}
+  .nav-links a:hover::after{width:100%;}
+  .nav-cta{
+    background:var(--cobalt);color:var(--ink);
+    padding:10px 20px;border-radius:2px;font-size:14px;font-weight:600;
+    transition:background .2s ease, transform .2s ease;
+  }
+  .nav-cta:hover{background:var(--coral);transform:translateY(-1px);}
+
+  /* ===== HERO with studio background ===== */
+  .hero{
+    padding:100px 0 84px;
+    position:relative;
+    overflow:hidden;
+    min-height:640px;
+    display:flex;
+    align-items:center;
+  }
+  .studio-bg{
+    position:absolute;inset:0;
+    z-index:0;
+    pointer-events:none;
+  }
+  .glow{
+    position:absolute;border-radius:50%;
+    filter:blur(90px);
+    opacity:0.35;
+  }
+  .glow-1{width:460px;height:460px;background:var(--cobalt);top:-120px;right:-80px;animation:drift1 9s ease-in-out infinite;}
+  .glow-2{width:360px;height:360px;background:var(--coral);bottom:-100px;left:10%;opacity:0.22;animation:drift2 11s ease-in-out infinite;}
+  @keyframes drift1{
+    0%,100%{transform:translate(0,0) scale(1);}
+    50%{transform:translate(-90px, 70px) scale(1.12);}
+  }
+  @keyframes drift2{
+    0%,100%{transform:translate(0,0) scale(1);}
+    50%{transform:translate(70px, -60px) scale(1.1);}
+  }
+  .studio-panel{
+    position:absolute;
+    border:1px solid var(--line-strong);
+    background:rgba(243,244,247,0.03);
+    border-radius:8px;
+    backdrop-filter:blur(2px);
+  }
+  .panel-a{width:280px;height:190px;top:12%;right:4%;transform:rotate(-6deg);animation:floatSlow 6s ease-in-out infinite;}
+  .panel-b{width:200px;height:140px;bottom:10%;right:24%;transform:rotate(4deg);animation:floatSlow 7s ease-in-out infinite .8s;}
+  .panel-dots{position:absolute;top:12px;left:14px;display:flex;gap:6px;}
+  .panel-dots span{width:7px;height:7px;border-radius:50%;background:var(--line-strong);}
+  .panel-lines{position:absolute;left:14px;right:14px;top:40px;display:flex;flex-direction:column;gap:8px;}
+  .panel-lines i{display:block;height:6px;border-radius:3px;background:var(--line-strong);}
+  @keyframes floatSlow{
+    0%,100%{margin-top:0;transform:rotate(var(--r,0deg));}
+    50%{margin-top:-22px;}
+  }
+
+  /* continuously scrolling code rows — the "moving studio" background */
+  .code-row{
+    position:absolute;
+    display:flex;
+    align-items:center;
+    gap:48px;
+    white-space:nowrap;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:14px;
+    width:max-content;
+    will-change:transform;
+  }
+  .code-row span{opacity:0.9;}
+  .row-1{top:16%;left:0;color:var(--cobalt);opacity:0.5;animation:scrollLeft 26s linear infinite;}
+  .row-2{top:38%;left:0;color:var(--paper-dim);opacity:0.32;font-size:13px;animation:scrollRight 32s linear infinite;}
+  .row-3{top:60%;left:0;color:var(--coral);opacity:0.4;animation:scrollLeft 22s linear infinite;}
+  .row-4{top:80%;left:0;color:var(--paper-dim);opacity:0.24;font-size:12.5px;animation:scrollRight 38s linear infinite;}
+  @keyframes scrollLeft{
+    from{transform:translateX(0);}
+    to{transform:translateX(-50%);}
+  }
+  @keyframes scrollRight{
+    from{transform:translateX(-50%);}
+    to{transform:translateX(0);}
+  }
+  .cursor-mark{
+    position:absolute;top:38%;right:12%;
+    width:16px;height:16px;
+    border:2px solid var(--coral);
+    border-radius:50%;
+    animation:pulseRing 2.6s ease-out infinite;
+  }
+  @keyframes pulseRing{
+    0%{box-shadow:0 0 0 0 rgba(255,138,101,0.4);}
+    70%{box-shadow:0 0 0 16px rgba(255,138,101,0);}
+    100%{box-shadow:0 0 0 0 rgba(255,138,101,0);}
+  }
+
+  .hero-content{position:relative;z-index:2;}
+  .eyebrow-role{font-size:16px;color:var(--paper-dim);font-weight:500;margin-bottom:20px;opacity:0;animation:riseIn .7s ease forwards .1s;}
+  h1.hero-name{
+    font-family:'Bricolage Grotesque';font-weight:800;
+    font-size:clamp(44px, 6.6vw, 92px);
+    line-height:0.98;letter-spacing:-0.03em;
+    max-width:14ch;
+  }
+  h1.hero-name span{display:block;opacity:0;transform:translateY(24px);animation:riseIn .8s cubic-bezier(.16,1,.3,1) forwards;}
+  h1.hero-name span:nth-child(1){animation-delay:.15s;}
+  h1.hero-name span:nth-child(2){color:var(--cobalt);animation-delay:.28s;}
+  @keyframes riseIn{to{opacity:1;transform:translateY(0);}}
+
+  .hero-sub{
+    max-width:46ch;color:var(--paper-dim);font-size:17px;margin-top:26px;
+    opacity:0;animation:riseIn .7s ease forwards .5s;
+  }
+  .hero-links{display:flex;gap:14px;flex-wrap:wrap;margin-top:34px;opacity:0;animation:riseIn .7s ease forwards .65s;}
+  .btn-primary{
+    background:var(--cobalt);color:var(--ink);padding:13px 24px;border-radius:2px;
+    font-size:14px;font-weight:600;display:inline-block;
+    transition:transform .2s ease, background .2s ease;
+  }
+  .btn-primary:hover{background:var(--coral);transform:translateY(-2px);}
+  .btn-outline{
+    border:1px solid var(--line-strong);color:var(--paper);
+    padding:13px 24px;border-radius:2px;font-size:14px;font-weight:600;
+    transition:border-color .2s ease, color .2s ease;
+  }
+  .btn-outline:hover{border-color:var(--cobalt);color:var(--cobalt);}
+
+  /* ===== SECTIONS ===== */
+  .section{padding:104px 0;border-top:1px solid var(--line);}
+  .sec-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:60px;gap:24px;flex-wrap:wrap;}
+  .sec-head h2{font-family:'Bricolage Grotesque';font-weight:700;font-size:clamp(30px,4vw,44px);letter-spacing:-0.02em;}
+  .sec-head p{color:var(--paper-dim);max-width:38ch;font-size:15.5px;}
+
+  /* ===== ABOUT ===== */
+  .about-grid{display:grid;grid-template-columns:1.15fr 1fr;gap:64px;}
+  .about-grid .lead{font-size:19px;line-height:1.7;color:var(--paper-dim);}
+  .about-grid .lead p + p{margin-top:18px;}
+  .about-grid .lead .hl{color:var(--cobalt);font-weight:600;}
+  .about-skills{display:flex;flex-direction:column;}
+  .skill-row{display:flex;justify-content:space-between;align-items:center;padding:18px 0;border-bottom:1px solid var(--line);}
+  .skill-row:first-child{border-top:1px solid var(--line);}
+  .skill-name{font-weight:600;font-size:15.5px;}
+  .skill-bar-track{width:150px;height:5px;background:var(--line-strong);border-radius:3px;overflow:hidden;}
+  .skill-bar-fill{height:100%;background:var(--cobalt);border-radius:3px;}
+
+  /* ===== FOCUS AREA ===== */
+  .focus-highlight{
+    border:1px solid var(--line-strong);
+    border-radius:10px;
+    padding:36px 32px;
+    margin-top:36px;
+    background:rgba(91,140,255,0.05);
+  }
+  .focus-highlight .tag{font-size:13px;color:var(--coral);font-weight:600;margin-bottom:10px;}
+  .focus-highlight h3{font-family:'Bricolage Grotesque';font-size:22px;font-weight:600;margin-bottom:10px;}
+  .focus-highlight p{color:var(--paper-dim);font-size:15px;max-width:56ch;}
+
+
+  /* ===== CONTACT ===== */
+  .contact-inner{display:grid;grid-template-columns:1.2fr 1fr;gap:60px;align-items:center;}
+  .contact-inner h2{font-family:'Bricolage Grotesque';font-weight:700;font-size:clamp(32px,4.6vw,52px);letter-spacing:-0.02em;line-height:1.1;}
+  .contact-inner h2 .hl{color:var(--coral);}
+  .contact-inner .sub{color:var(--paper-dim);margin-top:18px;max-width:44ch;font-size:15.5px;}
+
+  .email-card{
+    border:1px solid var(--line-strong);
+    border-radius:10px;
+    padding:36px 32px;
+    background:rgba(91,140,255,0.05);
+    text-align:left;
+  }
+  .email-card-label{font-size:13px;color:var(--coral);font-weight:600;margin-bottom:18px;}
+  .email-card-btn{width:100%;text-align:center;}
+  .email-card-note{font-size:13px;color:var(--paper-dim);margin-top:16px;text-align:center;}
+
+  footer{padding:28px 0;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-size:13.5px;color:var(--paper-dim);flex-wrap:wrap;gap:8px;}
+
+  @media (max-width: 860px){
+    .nav-links{display:none;}
+    .about-grid{grid-template-columns:1fr;}
+    .contact-inner{grid-template-columns:1fr;}
+    .wrap{padding:0 20px;}
+    .panel-a,.panel-b,.cursor-mark,.code-row{display:none;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important;transition:none !important;}
+    .eyebrow-role, h1.hero-name span, .hero-sub, .hero-links{opacity:1;transform:none;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="logo">AHCR<span style="color:var(--cobalt)">.</span></div>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <a href="#contact" class="nav-cta">Start a project</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="studio-bg">
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+    <div class="studio-panel panel-a">
+      <div class="panel-dots"><span></span><span></span><span></span></div>
+      <div class="panel-lines"><i style="width:70%"></i><i style="width:45%"></i><i style="width:60%"></i></div>
+    </div>
+    <div class="studio-panel panel-b">
+      <div class="panel-dots"><span></span><span></span><span></span></div>
+      <div class="panel-lines"><i style="width:55%"></i><i style="width:38%"></i></div>
+    </div>
+    <div class="cursor-mark"></div>
+
+    <div class="code-row row-1">
+      <span>&lt;div class="hero"&gt;</span><span>display: flex;</span><span>const design = true;</span><span>function build() {}</span><span>export default Rahi;</span>
+      <span>&lt;div class="hero"&gt;</span><span>display: flex;</span><span>const design = true;</span><span>function build() {}</span><span>export default Rahi;</span>
+    </div>
+    <div class="code-row row-2">
+      <span>.studio { color: light; }</span><span>@media (max-width: 860px)</span><span>position: relative;</span><span>&lt;/section&gt;</span>
+      <span>.studio { color: light; }</span><span>@media (max-width: 860px)</span><span>position: relative;</span><span>&lt;/section&gt;</span>
+    </div>
+    <div class="code-row row-3">
+      <span>npm run build</span><span>git commit -m "polish ui"</span><span>const app = createApp();</span><span>status: in progress</span>
+      <span>npm run build</span><span>git commit -m "polish ui"</span><span>const app = createApp();</span><span>status: in progress</span>
+    </div>
+    <div class="code-row row-4">
+      <span>color: #5B8CFF;</span><span>transition: all .2s ease;</span><span>class Studio extends Design {}</span><span>// keep it simple</span>
+      <span>color: #5B8CFF;</span><span>transition: all .2s ease;</span><span>class Studio extends Design {}</span><span>// keep it simple</span>
+    </div>
+  </div>
+
+  <div class="wrap hero-content">
+    <p class="eyebrow-role">Web Designer &amp; Student</p>
+    <h1 class="hero-name">
+      <span>Ali Hussain</span>
+      <span>Chowdhury Rahi</span>
+    </h1>
+    <p class="hero-sub">I turn ideas into clean, usable web interfaces. Alongside that, I'm building the wider skill set — prompt engineering, video editing, content design — to take a product from first sketch to a public launch.</p>
+    <div class="hero-links">
+      <a href="#about" class="btn-primary">About me</a>
+      <a href="#contact" class="btn-outline">Get in touch</a>
+    </div>
+  </div>
+</header>
+
+<section class="section" id="about">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>About</h2>
+    </div>
+    <div class="about-grid">
+      <div class="lead">
+        <p>Web design is where I do my best work. I study layout, typography, and interaction closely, and every project sharpens that instinct further — it's the skill I return to first, and the one I've grown fastest at.</p>
+        <p>I've also built real, working ability in prompt engineering, video editing, Canva-based image design, and social media content creation. None of it came from a classroom. It came from staying active in design and tech communities, taking real feedback, and shipping actual work.</p>
+        <p>Right now, I'm designing and building an original app from scratch — the goal is to carry it all the way from concept to a public release on the Play Store and App Store. It's the project that best shows how I work: start with an idea, refine it with intent, and follow it through to something finished.</p>
+        <div class="focus-highlight">
+          <div class="tag">Currently building</div>
+          <h3>An app, from first sketch to launch</h3>
+          <p>In active development now, with a public release planned for the Play Store and App Store.</p>
+        </div>
+      </div>
+      <div class="about-skills">
+        <div class="skill-row">
+          <span class="skill-name">Web Design</span>
+          <div class="skill-bar-track"><div class="skill-bar-fill" style="width:95%"></div></div>
+        </div>
+        <div class="skill-row">
+          <span class="skill-name">Prompt Engineering</span>
+          <div class="skill-bar-track"><div class="skill-bar-fill" style="width:75%"></div></div>
+        </div>
+        <div class="skill-row">
+          <span class="skill-name">Video Editing</span>
+          <div class="skill-bar-track"><div class="skill-bar-fill" style="width:70%"></div></div>
+        </div>
+        <div class="skill-row">
+          <span class="skill-name">Image Design (Canva)</span>
+          <div class="skill-bar-track"><div class="skill-bar-fill" style="width:80%"></div></div>
+        </div>
+        <div class="skill-row">
+          <span class="skill-name">Social Media Content Creation</span>
+          <div class="skill-bar-track"><div class="skill-bar-fill" style="width:78%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="contact">
+  <div class="wrap">
+    <div class="contact-inner">
+      <div>
+        <h2>Have an idea? <span class="hl">Let's build it.</span></h2>
+        <p class="sub">I take on web design work, visual content, and collaborations of any size. Reach out — I read and reply to every email myself.</p>
+      </div>
+      <div class="email-card">
+        <div class="email-card-label">Reach me directly</div>
+        <a href="mailto:alihussainchowdhuryrahi1020@gmail.com" class="btn-primary email-card-btn">Email me</a>
+        <p class="email-card-note">Opens your email app with the message addressed straight to me.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+    <span>© 2026 Ali Hussain Chowdhury Rahi</span>
+    <span>Web Designer in progress</span>
+  </div>
+</footer>
+
+</body>
+</html>
