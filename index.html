@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ali Hussain Chowdhury Rahi — Web Designer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep: #0a0716;
+    --text: #f3f1fb;
+    --muted: #a79fc9;
+    --purple: #b794f6;
+    --pink: #f472b6;
+    --cyan: #22d3ee;
+    --green: #4ade80;
+    --orange: #fb923c;
+    --line: rgba(255,255,255,0.08);
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background: var(--bg-deep);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  h1, h2, .logo{ font-family: 'Space Grotesk', sans-serif; }
+
+  ::selection{ background: var(--purple); color: #0a0716; }
+
+  /* ---------- background stack ---------- */
+  .bg-gradient{
+    position: fixed; inset: 0; z-index: -6;
+    background: linear-gradient(120deg, #0a0716, #1a1035, #0d1b2e, #1a0f30, #0a0716);
+    background-size: 400% 400%;
+    animation: gradientShift 26s ease infinite;
+  }
+  @keyframes gradientShift{
+    0%{ background-position: 0% 50%; }
+    50%{ background-position: 100% 50%; }
+    100%{ background-position: 0% 50%; }
+  }
+
+  #bg-canvas{ position: fixed; inset: 0; z-index: -5; display: block; }
+
+  .scanlines{
+    position: fixed; inset: 0; z-index: -4; pointer-events: none;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.025) 0px,
+      rgba(255,255,255,0.025) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    opacity: 0.5;
+  }
+
+  .vignette{
+    position: fixed; inset: 0; z-index: -3; pointer-events: none;
+    background: linear-gradient(
+      105deg,
+      rgba(6,4,16,0.82) 0%,
+      rgba(6,4,16,0.62) 40%,
+      rgba(6,4,16,0.28) 70%,
+      rgba(6,4,16,0.08) 100%
+    );
+  }
+
+  .grain{
+    position: fixed; inset: 0; z-index: -2; pointer-events: none; opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ---------- top bar (in-flow, scrolls away with the page) ---------- */
+  .top-bar{
+    position: relative;
+    z-index: 5;
+    padding: 30px clamp(24px, 6vw, 72px) 0;
+  }
+
+  .logo-fixed{
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-decoration: none;
+    background: linear-gradient(90deg, var(--purple), var(--pink), var(--cyan), var(--green), var(--purple));
+    background-size: 300% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: hueShift 7s linear infinite;
+    filter: drop-shadow(0 0 14px rgba(183,148,246,0.35));
+  }
+
+  @keyframes hueShift{
+    0%{ background-position: 0% center; }
+    100%{ background-position: 300% center; }
+  }
+
+  /* ---------- quick nav (in-flow, sits between hero and about) ---------- */
+  .quick-nav{
+    position: relative;
+    z-index: 5;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 0 clamp(24px, 6vw, 72px) clamp(50px, 9vh, 100px);
+  }
+
+  .quick-nav a{
+    font-family: 'Inter', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 11px 24px;
+    border-radius: 100px;
+    background: rgba(14, 9, 30, 0.5);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--line);
+    transition: color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+    white-space: nowrap;
+  }
+
+  .quick-nav a:hover, .quick-nav a:focus-visible{
+    color: var(--text);
+    background: rgba(255,255,255,0.08);
+    transform: translateY(-2px);
+  }
+
+  .quick-nav a.emphasis{
+    color: #0a0716;
+    background: linear-gradient(100deg, var(--cyan), var(--purple));
+    font-weight: 600;
+    border-color: transparent;
+  }
+
+  .quick-nav a.emphasis:hover{
+    box-shadow: 0 0 18px rgba(183,148,246,0.45);
+  }
+
+  @media (max-width: 640px){
+    .quick-nav a{ padding: 10px 18px; font-size: 0.82rem; }
+  }
+
+  /* ---------- layout ---------- */
+  section{ position: relative; z-index: 1; padding: clamp(90px, 14vh, 160px) clamp(24px, 6vw, 72px); }
+  .content{ max-width: 660px; }
+
+  /* ---------- hero ---------- */
+  .hero{ min-height: 88vh; display: flex; flex-direction: column; justify-content: center; }
+
+  .hero h1{
+    font-family: 'Manrope', sans-serif;
+    font-size: clamp(2.6rem, 7vw, 5rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    max-width: 15ch;
+    background: linear-gradient(100deg, var(--cyan), var(--purple), var(--pink), var(--orange), var(--cyan));
+    background-size: 300% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: hueShift 9s linear infinite;
+  }
+
+  .hero .role{
+    margin-top: 26px;
+    font-size: clamp(1.15rem, 2.4vw, 1.55rem);
+    font-weight: 500;
+    color: #e4ddff;
+    max-width: 34ch;
+  }
+
+  .hero p{ margin-top: 20px; color: var(--muted); font-size: 1.06rem; max-width: 52ch; }
+
+  /* ---------- section headings ---------- */
+  h2{
+    font-size: clamp(1.7rem, 3.4vw, 2.3rem);
+    font-weight: 600;
+    margin-bottom: 34px;
+    letter-spacing: -0.01em;
+  }
+
+  .eyebrow-word{
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--cyan);
+    margin-bottom: 10px;
+  }
+
+  /* ---------- glass panel (shared readability device) ---------- */
+  .panel{
+    background: rgba(12, 8, 26, 0.45);
+    backdrop-filter: blur(10px);
+    border-left: 2px solid var(--accent, var(--purple));
+    padding: clamp(24px, 4vw, 40px) clamp(24px, 5vw, 44px);
+    border-radius: 2px;
+  }
+
+  #about .panel{ --accent: var(--purple); }
+  #skills .panel{ --accent: var(--cyan); }
+  #building .panel{ --accent: var(--pink); }
+  #contact .panel{ --accent: var(--orange); }
+
+  /* ---------- about ---------- */
+  .about p{ color: #e3ddf5; font-size: 1.08rem; max-width: 62ch; margin-bottom: 20px; }
+  .about p:last-child{ margin-bottom: 0; }
+
+  /* ---------- skills ---------- */
+  .skills-list{ list-style: none; }
+
+  .skill-item{
+    display: flex; flex-wrap: wrap; gap: 6px 32px;
+    padding: 24px 0; border-bottom: 1px solid var(--line);
+    position: relative; padding-left: 22px;
+  }
+  .skill-item:first-child{ padding-top: 0; }
+  .skill-item:last-child{ border-bottom: none; }
+
+  .skill-item::before{
+    content: '';
+    position: absolute; left: 0; top: 30px;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--dot, var(--cyan));
+    box-shadow: 0 0 10px var(--dot, var(--cyan));
+  }
+
+  .skill-item .name{
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.18rem; font-weight: 600;
+    flex: 0 0 250px;
+    color: var(--dot, var(--cyan));
+  }
+
+  .skill-item .name .tag{
+    display: block; font-family: 'JetBrains Mono', monospace;
+    font-weight: 400; font-size: 0.75rem; color: var(--muted); margin-top: 5px;
+  }
+
+  .skill-item .desc{ color: #d9d3ef; font-size: 0.99rem; max-width: 42ch; flex: 1 1 280px; }
+
+  /* ---------- building ---------- */
+  .status{
+    display: inline-block; font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem; color: var(--pink);
+    border: 1px solid rgba(244,114,182,0.4);
+    padding: 6px 14px; border-radius: 100px; margin-bottom: 22px;
+  }
+  .status::before{
+    content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--pink); margin-right: 9px; vertical-align: middle;
+    box-shadow: 0 0 8px var(--pink);
+  }
+
+  .building p{ color: #e3ddf5; font-size: 1.05rem; max-width: 58ch; }
+  .building p + p{ margin-top: 16px; }
+
+  /* ---------- contact ---------- */
+  .contact{ padding-bottom: clamp(120px, 16vh, 180px); }
+  .contact p{ color: var(--muted); font-size: 1.08rem; max-width: 48ch; margin-bottom: 32px; }
+
+  .email-btn{
+    display: inline-flex; align-items: center; gap: 12px;
+    background: linear-gradient(100deg, var(--cyan), var(--purple), var(--pink));
+    background-size: 220% auto;
+    color: #0a0716; font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+    font-size: 1.02rem; padding: 17px 34px; border-radius: 4px;
+    text-decoration: none; transition: transform 0.25s ease, background-position 0.6s ease;
+  }
+  .email-btn:hover, .email-btn:focus-visible{
+    background-position: 100% center; transform: translateY(-3px);
+  }
+  .email-btn svg{ width: 18px; height: 18px; }
+
+  footer{
+    position: relative; z-index: 1;
+    padding: 30px clamp(24px, 6vw, 72px) 44px;
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+    color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--line);
+  }
+
+  @media (max-width: 640px){
+    .skill-item .name{ flex-basis: 100%; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior: auto; }
+    .hero h1, .logo-fixed{ animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-gradient"></div>
+<canvas id="bg-canvas"></canvas>
+<div class="scanlines"></div>
+<div class="vignette"></div>
+<div class="grain"></div>
+
+<header class="top-bar">
+  <a href="#top" class="logo-fixed">AHCR</a>
+</header>
+
+<section class="hero" id="top">
+  <div class="content">
+    <h1>Ali Hussain Chowdhury Rahi</h1>
+    <p class="role">A web designer in the making — crafting interfaces where every pixel, spacing choice, and interaction has a reason to exist.</p>
+    <p>Currently sharpening the craft through hands-on projects, close attention to detail, and a growing fluency across design and code. Every project is treated as a chance to build something a little more refined than the last.</p>
+  </div>
+</section>
+
+<nav class="quick-nav">
+  <a href="#about">About</a>
+  <a href="#skills">Skills</a>
+  <a href="#building">Building</a>
+  <a href="#contact" class="emphasis">Contact</a>
+</nav>
+
+<section id="about" class="about">
+  <div class="content panel">
+    <span class="eyebrow-word">// about</span>
+    <h2>About</h2>
+    <p>I am Ali Hussain Chowdhury Rahi — most people simply call me Rahi. I am a student, but more than that, I am someone who has chosen the web as a canvas. Design, to me, is not decoration; it is the quiet architecture behind every experience a person has online, and I have devoted the better part of my learning to understanding that architecture deeply.</p>
+    <p>Web design remains my sharpest and most passionate pursuit — the discipline where intention meets aesthetics, where a single decision about spacing or color can change how an entire interface feels. Alongside it, I have cultivated a wider range of applied skills: prompt engineering to communicate precisely with intelligent systems, video editing to shape raw footage into stories worth watching, image design through Canva to bring visual ideas to life, and content creation tailored for social platforms. None of these were learned in isolation; each was built and tested through real engagement within my professional network.</p>
+    <p>I approach every piece of work the same way — with patience, curiosity, and a refusal to settle for the obvious choice. That same mindset now drives a more ambitious pursuit: an original application, currently taking shape from the ground up, that I intend to design, build, and publish entirely on my own — from the first sketch to the Play Store and the App Store.</p>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="content panel" style="max-width: 740px;">
+    <span class="eyebrow-word">// capabilities</span>
+    <h2>The Craft I Practice</h2>
+    <ul class="skills-list">
+      <li class="skill-item" style="--dot: var(--purple);">
+        <div class="name">Web Design<span class="tag">Primary discipline</span></div>
+        <div class="desc">Designing digital experiences that hold together — thoughtful layouts, deliberate typography, and interactions that feel natural rather than accidental. This is where intuition meets structural precision.</div>
+      </li>
+      <li class="skill-item" style="--dot: var(--cyan);">
+        <div class="name">Prompt Engineering<span class="tag">AI systems</span></div>
+        <div class="desc">Crafting precise, structured prompts that guide AI systems toward accurate and genuinely useful output — a skill sharpened through constant experimentation and real-world application.</div>
+      </li>
+      <li class="skill-item" style="--dot: var(--pink);">
+        <div class="name">Video Editing<span class="tag">Post-production</span></div>
+        <div class="desc">Transforming raw footage into polished, story-driven content — pacing, transitions, and sound designed to hold attention from the very first second.</div>
+      </li>
+      <li class="skill-item" style="--dot: var(--green);">
+        <div class="name">Image Design<span class="tag">Canva</span></div>
+        <div class="desc">Producing sharp, purposeful visuals for social media, branding, and promotional use — where every element earns its place in the frame.</div>
+      </li>
+      <li class="skill-item" style="--dot: var(--orange);">
+        <div class="name">Content Creation<span class="tag">Social platforms</span></div>
+        <div class="desc">Building content grounded in real engagement rather than guesswork — developed through active, hands-on work across a growing professional network.</div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section id="building">
+  <div class="content panel">
+    <span class="eyebrow-word">// in progress</span>
+    <h2>The Next Build</h2>
+    <span class="status">In active development</span>
+    <p>An original application is currently taking shape — conceived, designed, and being built entirely from the ground up. Every screen, flow, and interaction is being treated with the same care given to a finished, professional product, not a rough prototype.</p>
+    <p>Once complete, it will be published on both the Play Store and the App Store — a project carried independently, from the very first idea to a fully realized release.</p>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <div class="content panel">
+    <span class="eyebrow-word">// contact</span>
+    <h2>Let's Build Something</h2>
+    <p>If a project, an idea, or simply a conversation sounds interesting — this is the fastest way to reach me.</p>
+    <a class="email-btn" href="mailto:alihussainchowdhuryrahi1020@gmail.com">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M4 6l8 7 8-7"/></svg>
+      Email Me
+    </a>
+  </div>
+</section>
+
+<footer>
+  <span>AHCR — Designed &amp; built by Ali Hussain Chowdhury Rahi</span>
+  <span>2026</span>
+</footer>
+
+<script>
+(function(){
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let width, height, dpr;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const snippets = [
+    "const [state, setState] = useState()",
+    "async function main() {",
+    "await fetch('/api/data')",
+    "import { useEffect } from 'react'",
+    "export default function App()",
+    "git commit -m 'refactor: cleanup'",
+    "docker run -p 3000:3000",
+    "SELECT * FROM users WHERE id =",
+    "npm run build --production",
+    "interface Props {",
+    "type Response<T> = Promise<T>",
+    "try { } catch (err) {",
+    "requestAnimationFrame(loop)",
+    "@media (min-width: 768px)",
+    "grid-template-columns: repeat(3, 1fr)",
+    "transform: translateY(-4px)",
+    "border-radius: var(--radius)",
+    "curl -X POST https://api.dev",
+    "yarn add framer-motion",
+    "const handler = async (req) =>",
+    "background-clip: text",
+    "z-index: 999",
+    "0x4F2A9C",
+    "λ (x) => x * 2",
+    "console.log('build ready')",
+    "return () => cleanup()",
+    "flex-direction: column",
+    "box-shadow: 0 0 24px rgba(0,0,0,.4)",
+    "animation: pulse 2s infinite",
+    "export const theme = {"
+  ];
+
+  const accentColors = ['183,148,246', '244,114,182', '34,211,238', '74,222,128', '251,146,60'];
+
+  let particles = [];
+  let t = 0;
+
+  function resize(){
+    dpr = window.devicePixelRatio || 1;
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    canvas.style.width = width + 'px';
+    canvas.style.height = height + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    initParticles();
+  }
+
+  function makeParticle(startY){
+    const colorIdx = Math.floor(Math.random() * accentColors.length);
+    return {
+      x: Math.random() * width,
+      y: startY !== undefined ? startY : height + 30,
+      speed: 0.12 + Math.random() * 0.3,
+      size: 11 + Math.random() * 8,
+      text: snippets[Math.floor(Math.random() * snippets.length)],
+      color: accentColors[colorIdx],
+      baseAlpha: 0.10 + Math.random() * 0.16,
+      driftAmp: 6 + Math.random() * 16,
+      driftSpeed: 0.2 + Math.random() * 0.35,
+      phase: Math.random() * Math.PI * 2
+    };
+  }
+
+  function initParticles(){
+    const count = Math.min(46, Math.floor((width * height) / 26000));
+    particles = [];
+    for(let i = 0; i < count; i++){
+      particles.push(makeParticle(Math.random() * height));
+    }
+  }
+
+  function drawGlow(x, y, radius, color, alpha){
+    const g = ctx.createRadialGradient(x, y, 0, x, y, radius);
+    g.addColorStop(0, `rgba(${color}, ${alpha})`);
+    g.addColorStop(1, `rgba(${color}, 0)`);
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, width, height);
+  }
+
+  function drawFloorGrid(){
+    const horizonY = height * 0.86;
+    const vanishX = width * 0.5;
+    ctx.save();
+
+    // horizontal lines, denser near horizon
+    const lineCount = 9;
+    for(let i = 1; i <= lineCount; i++){
+      const p = i / lineCount;
+      const y = horizonY + p * p * (height - horizonY);
+      const alpha = 0.16 * (1 - p * 0.7);
+      const hue = 190 + Math.sin(t * 0.5 + i) * 30;
+      ctx.strokeStyle = `hsla(${hue}, 90%, 65%, ${alpha})`;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(width, y);
+      ctx.stroke();
+    }
+
+    // converging diagonal lines
+    const cols = 12;
+    for(let i = 0; i <= cols; i++){
+      const p = i / cols;
+      const xBottom = p * width;
+      const xTop = vanishX + (xBottom - vanishX) * 0.08;
+      const hue = 280 + p * 100;
+      ctx.strokeStyle = `hsla(${hue}, 85%, 68%, 0.10)`;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(xBottom, height);
+      ctx.lineTo(xTop, horizonY);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function frame(){
+    t += 0.006;
+    ctx.clearRect(0, 0, width, height);
+
+    // ambient studio glows — cycling hues, like multiple monitors
+    const hueA = (t * 12) % 360;
+    const hueB = (t * 9 + 140) % 360;
+    const hueC = (t * 7 + 260) % 360;
+
+    drawGlow(width * 0.75, height * 0.30, Math.max(width, height) * 0.42, '183,148,246', 0.11 + Math.sin(t) * 0.02);
+    drawGlow(width * 0.18, height * 0.68, Math.max(width, height) * 0.34, '34,211,238', 0.09 + Math.sin(t * 0.9 + 1) * 0.02);
+    drawGlow(width * 0.55, height * 0.85, Math.max(width, height) * 0.3, '244,114,182', 0.08 + Math.sin(t * 0.7 + 2) * 0.02);
+
+    drawFloorGrid();
+
+    particles.forEach(p => {
+      const dx = Math.sin(t * p.driftSpeed + p.phase) * p.driftAmp;
+      ctx.font = `${p.size}px 'JetBrains Mono', monospace`;
+      ctx.fillStyle = `rgba(${p.color}, ${p.baseAlpha})`;
+      ctx.fillText(p.text, p.x + dx, p.y);
+
+      if(!reduceMotion){
+        p.y -= p.speed;
+        if(p.y < -20){
+          Object.assign(p, makeParticle(height + 20));
+        }
+      }
+    });
+
+    if(!reduceMotion){
+      requestAnimationFrame(frame);
+    }
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  frame();
+})();
+</script>
+
+</body>
+</html>
